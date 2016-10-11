@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 24
@@ -13,11 +14,28 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
+    // Enable data binding library
+    // Data binding doesn't support the new Jack compiler yet
+    // So we are stuck with Retrolambda for now....
+    dataBinding {
+        enabled = true
+    }
+
     buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+        }
         release {
+            applicationIdSuffix '.release'
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
 }
@@ -28,7 +46,26 @@ dependencies {
     // Support Libs
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
-    
+    compile 'com.android.support:recyclerview-v7:24.2.1'
+
+    // RxJava
+    compile 'io.reactivex:rxjava:1.2.1'
+    compile 'io.reactivex:rxandroid:1.2.1'
+
+    // Retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.0.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0'
+
+    // Dagger
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.6'
+    compile 'com.google.dagger:dagger:2.6'
+
+    // Misc
+
+    // Custom Retrolambda version
+    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
+
     // Testing Libraries
     testCompile 'junit:junit:4.12'
 
