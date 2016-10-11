@@ -13,4 +13,9 @@ public abstract class AbstractViewModel extends BaseObservable implements ViewMo
     public void unbind() {
 
     }
+
+    @Override
+    public void onDestroy() {
+
+    }
 }

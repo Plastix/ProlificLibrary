@@ -51,4 +51,10 @@ public abstract class ViewModelActivity<T extends AbstractViewModel, B extends V
             onHidden();
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        viewModel.onDestroy();
+    }
 }

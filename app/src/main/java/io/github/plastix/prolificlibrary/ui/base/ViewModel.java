@@ -5,4 +5,6 @@ public interface ViewModel {
     void bind();
 
     void unbind();
+
+    void onDestroy();
 }

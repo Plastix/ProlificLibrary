@@ -1,22 +1,42 @@
 package io.github.plastix.prolificlibrary.ui.base;
 
-import android.support.annotation.CallSuper;
-
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
 public class RxViewModel extends AbstractViewModel {
 
-    protected CompositeSubscription compositeSubscription = new CompositeSubscription();
+    protected CompositeSubscription foregroundTasks = new CompositeSubscription();
+    protected CompositeSubscription backgroundTasks = new CompositeSubscription();
 
-    public void addSubscription(Subscription subscription) {
-        compositeSubscription.add(subscription);
+    /**
+     * Add a subscription to be automatically un-subscribed when the current viewModel is unbound. This
+     * is good for cancelling running observables when the viewModel is no longer bound to a visible view.
+     *
+     * @param subscription
+     */
+    public void unsubscribeOnUnbind(Subscription subscription) {
+        foregroundTasks.add(subscription);
     }
 
-    @CallSuper
+    /**
+     * Add a subscription to be automatically un-subscribed when the current viewModel is destroyed. This is
+     * good for cancelling running observables that you want to keep updating even though the viewModel
+     * isn't attached to a current view.
+     *
+     * @param subscription
+     */
+    public void unsubscribeOnDestroy(Subscription subscription) {
+        backgroundTasks.add(subscription);
+    }
+
+    @Override
+    public void onDestroy() {
+        backgroundTasks.clear();
+    }
+
     @Override
     public void unbind() {
         super.unbind();
-        compositeSubscription.clear();
+        foregroundTasks.clear();
     }
 }
