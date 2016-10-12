@@ -1,7 +1,6 @@
 package io.github.plastix.prolificlibrary.ui.detail;
 
 import android.util.Log;
-import android.view.View;
 
 import javax.inject.Inject;
 
@@ -16,6 +15,14 @@ public class DetailViewModel extends RxViewModel {
     @Inject
     public DetailViewModel(@ActivityScope Book book) {
         this.book = book;
+    }
+
+    public void onFabClick() {
+        Log.d("DetailViewModel", "Share clicked!");
+    }
+
+    public void onCheckoutClick() {
+        Log.d("DetailViewModel", "Checkout clicked!");
     }
 
     public String getTitle() {
@@ -36,18 +43,6 @@ public class DetailViewModel extends RxViewModel {
 
     public String getCheckedOut() {
         return book.checkedOutAuthor;
-    }
-
-    public View.OnClickListener onFabClick() {
-        return v -> {
-            Log.d("DetailViewModel", "Share clicked!");
-        };
-    }
-
-    public View.OnClickListener onCheckoutClick() {
-        return v -> {
-            Log.d("DetailViewModel", "Checkout clicked!");
-        };
     }
 
 

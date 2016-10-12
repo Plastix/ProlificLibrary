@@ -72,7 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:onClick="@{viewModel.onCheckoutClick}"
+                android:onClick="@{() -> viewModel.onCheckoutClick()}"
                 android:text="@string/detail_checkout_button"/>
 
         </LinearLayout>
@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            android:onClick="@{viewModel.onFabClick}"
+            android:onClick="@{() -> viewModel.onFabClick()}"
             android:tint="@android:color/white"
             app:srcCompat="@drawable/ic_share_black_24dp"/>
 
