@@ -1,7 +1,5 @@
 package io.github.plastix.prolificlibrary.ui.list;
 
-import android.view.View;
-
 import com.jakewharton.rxrelay.BehaviorRelay;
 
 import java.util.ArrayList;
@@ -42,8 +40,8 @@ public class ListViewModel extends RxViewModel {
     }
 
 
-    public View.OnClickListener onFabClick() {
-        return V -> context.startActivity(AddActivity.newIntent(context));
+    public void onFabClick() {
+        context.startActivity(AddActivity.newIntent(context));
     }
 
     public Observable<List<Book>> getBooks() {

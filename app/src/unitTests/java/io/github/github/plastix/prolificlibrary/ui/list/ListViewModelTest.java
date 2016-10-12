@@ -1,6 +1,7 @@
 package io.github.github.plastix.prolificlibrary.ui.list;
 
 import android.content.Context;
+import android.content.Intent;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -19,7 +20,9 @@ import io.github.plastix.prolificlibrary.ui.list.ListViewModel;
 import rx.Single;
 import rx.observers.TestSubscriber;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ListViewModelTest {
@@ -42,6 +45,7 @@ public class ListViewModelTest {
         MockitoAnnotations.initMocks(this);
 
         listViewModel = new ListViewModel(libraryService);
+        listViewModel.bind(context);
 
         testSubscriber = new TestSubscriber<>();
     }
@@ -69,5 +73,12 @@ public class ListViewModelTest {
         testSubscriber.assertValueCount(1);
         testSubscriber.assertValue(books);
         testSubscriber.assertNoTerminalEvent();
+    }
+
+    @Test
+    public void fabClick_shouldStartActivity() {
+        listViewModel.onFabClick();
+
+        verify(context).startActivity(any(Intent.class));
     }
 }
