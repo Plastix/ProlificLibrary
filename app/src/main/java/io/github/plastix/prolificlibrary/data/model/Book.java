@@ -9,20 +9,20 @@ import java.util.Date;
 @Parcel
 public class Book {
 
-    String author;
+    public String author;
 
-    String categories;
+    public String categories;
 
-    int id;
+    public int id;
 
     @SerializedName("lastCheckedOut")
-    Date checkedOutDate;
+    public Date checkedOutDate;
 
     @SerializedName("lastCheckedOutBy")
-    String checkedOutAuthor;
+    public String checkedOutAuthor;
 
-    String title;
+    public String title;
 
-    String url;
+    public String url;
 
 }

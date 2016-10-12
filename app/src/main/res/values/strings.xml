@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ProlificLibrary</string>
+    <string name="app_name">Prolific Library</string>
     <string name="action_settings">Settings</string>
     
     <string name="list_screen_title">Books</string>

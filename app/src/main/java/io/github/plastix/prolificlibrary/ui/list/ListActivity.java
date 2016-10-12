@@ -2,22 +2,44 @@ package io.github.plastix.prolificlibrary.ui.list;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import javax.inject.Inject;
 
 import io.github.plastix.prolificlibrary.ApplicationComponent;
 import io.github.plastix.prolificlibrary.R;
 import io.github.plastix.prolificlibrary.databinding.ActivityListBinding;
 import io.github.plastix.prolificlibrary.ui.base.ViewModelActivity;
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 
-public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListBinding> {
+public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListBinding> implements SwipeRefreshLayout.OnRefreshListener {
+
+    @Inject
+    BookAdapter bookAdapter;
+
+    @Inject
+    LinearLayoutManager linearLayoutManager;
+
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setSupportActionBar(binding.toolbar);
 
+        setupUI();
+    }
+
+    private void setupUI() {
         binding.setViewModel(viewModel);
+        binding.swipeRefresh.setOnRefreshListener(this);
+
+        binding.recycler.setLayoutManager(linearLayoutManager);
+        binding.recycler.setAdapter(bookAdapter);
     }
 
     @Override
@@ -28,6 +50,30 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
     @Override
     protected void injectDependencies(ApplicationComponent component) {
         component.plus(new ListModule(this)).injectTo(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // TODO Move this...
+        Subscription booksSub = viewModel.getBooks().subscribe(books -> {
+            binding.swipeRefresh.setRefreshing(false);
+            bookAdapter.setBooks(books);
+        });
+
+        compositeSubscription.add(booksSub);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        compositeSubscription.clear();
+    }
+
+    @Override
+    public void onRefresh() {
+        viewModel.fetchBooks();
     }
 
     @Override
@@ -51,4 +97,5 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
 
         return super.onOptionsItemSelected(item);
     }
+
 }

@@ -17,25 +17,25 @@ public interface LibraryService {
 
     String BASE_URL = "http://prolific-interview.herokuapp.com/57fce7895961070009f68fd0/";
 
-    @GET("/books")
+    @GET("books")
     Single<List<Book>> fetchAllBooks();
 
     @FormUrlEncoded
-    @POST("/books/")
+    @POST("books/")
     Single<Book> submitBook(@Field("author") String author,
                             @Field("categories") String categories,
                             @Field("title") String title,
                             @Field("publisher") String publisher
     );
 
-    @GET("/books/{id}")
+    @GET("books/{id}")
     Single<Book> getBook(@Path("id") int id);
 
-    @PUT("/books/{id}")
+    @PUT("books/{id}")
     Single<Book> updateBook(@Path("id") int id,
                             @Field("lastCheckedOutBy") String date
     );
 
-    @DELETE("/clean")
+    @DELETE("clean")
     Completable clearAllBooks();
 }
