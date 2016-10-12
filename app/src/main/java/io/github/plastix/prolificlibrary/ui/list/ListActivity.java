@@ -24,7 +24,7 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
     @Inject
     LinearLayoutManager linearLayoutManager;
 
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private CompositeSubscription modelSubscriptions = new CompositeSubscription();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +62,13 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
             bookAdapter.setBooks(books);
         });
 
-        compositeSubscription.add(booksSub);
+        modelSubscriptions.add(booksSub);
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        compositeSubscription.clear();
+    protected void onUnbind() {
+        super.onUnbind();
+        modelSubscriptions.clear();
     }
 
     @Override
@@ -98,4 +98,11 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        bookAdapter.onDestroy();
+        bookAdapter = null;
+        linearLayoutManager = null;
+    }
 }

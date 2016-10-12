@@ -3,6 +3,7 @@ package io.github.plastix.prolificlibrary.ui.base;
 import android.databinding.ViewDataBinding;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -45,7 +46,18 @@ public abstract class ViewModelActivity<T extends AbstractViewModel, B extends V
     @Override
     protected void onStart() {
         super.onStart();
+        onBind();
+    }
+
+    @CallSuper
+    protected void onBind(){
         viewModel.bind(this);
+
+    }
+
+    @CallSuper
+    protected void onUnbind(){
+        viewModel.unbind();
     }
 
     // On Nougat and above noStop is no longer lazy!!
@@ -55,19 +67,15 @@ public abstract class ViewModelActivity<T extends AbstractViewModel, B extends V
     protected void onStop() {
         super.onStop();
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            onHidden();
+            onUnbind();
         }
-    }
-
-    private void onHidden() {
-        viewModel.unbind();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-            onHidden();
+            onUnbind();
         }
     }
 

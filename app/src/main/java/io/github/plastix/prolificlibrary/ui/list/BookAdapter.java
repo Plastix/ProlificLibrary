@@ -76,4 +76,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BindingHolder>
             this.binding = binding;
         }
     }
+
+    public void onDestroy(){
+        this.context = null;
+    }
 }
