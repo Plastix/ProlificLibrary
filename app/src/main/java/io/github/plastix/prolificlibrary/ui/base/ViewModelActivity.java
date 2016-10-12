@@ -52,7 +52,6 @@ public abstract class ViewModelActivity<T extends AbstractViewModel, B extends V
     @CallSuper
     protected void onBind(){
         viewModel.bind(this);
-
     }
 
     @CallSuper
@@ -81,8 +80,8 @@ public abstract class ViewModelActivity<T extends AbstractViewModel, B extends V
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         viewModel.onDestroy();
+        super.onDestroy();
     }
 
     @Override

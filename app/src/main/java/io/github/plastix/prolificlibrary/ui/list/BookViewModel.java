@@ -1,10 +1,10 @@
 package io.github.plastix.prolificlibrary.ui.list;
 
-import android.util.Log;
 import android.view.View;
 
 import io.github.plastix.prolificlibrary.data.model.Book;
 import io.github.plastix.prolificlibrary.ui.base.AbstractViewModel;
+import io.github.plastix.prolificlibrary.ui.detail.DetailActivity;
 
 public class BookViewModel extends AbstractViewModel {
 
@@ -23,6 +23,6 @@ public class BookViewModel extends AbstractViewModel {
     }
 
     public View.OnClickListener onClick() {
-        return v -> Log.d("BookViewModel", "book clicked!");
+        return v -> context.startActivity(DetailActivity.newIntent(context, book));
     }
 }

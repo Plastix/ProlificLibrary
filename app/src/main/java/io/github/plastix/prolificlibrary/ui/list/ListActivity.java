@@ -30,22 +30,12 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
     @Inject
     LinearLayoutManager linearLayoutManager;
 
-    private CompositeSubscription modelSubscriptions = new CompositeSubscription();
+    private CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setSupportActionBar(binding.toolbar);
-
-        setupUI();
-    }
-
-    private void setupUI() {
-        binding.setViewModel(viewModel);
-        binding.swipeRefresh.setOnRefreshListener(this);
-
-        binding.recycler.setLayoutManager(linearLayoutManager);
-        binding.recycler.setAdapter(bookAdapter);
     }
 
     @Override
@@ -61,9 +51,18 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
     @Override
     protected void onBind() {
         super.onBind();
+        setupUI();
 
-        modelSubscriptions.add(viewModel.getBooks().
+        subscriptions.add(viewModel.getBooks().
                 subscribe(updateBooksSubscriber()));
+    }
+
+    private void setupUI() {
+        binding.setViewModel(viewModel);
+        binding.swipeRefresh.setOnRefreshListener(this);
+
+        binding.recycler.setLayoutManager(linearLayoutManager);
+        binding.recycler.setAdapter(bookAdapter);
     }
 
     public Subscriber<List<Book>> updateBooksSubscriber() {
@@ -89,7 +88,7 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
     @Override
     protected void onUnbind() {
         super.onUnbind();
-        modelSubscriptions.clear();
+        subscriptions.clear();
     }
 
     // SwipeRefreshLayout callback
