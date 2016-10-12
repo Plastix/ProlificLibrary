@@ -4,8 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import org.parceler.Parcels;
+
+import javax.inject.Inject;
 
 import io.github.plastix.prolificlibrary.ApplicationComponent;
 import io.github.plastix.prolificlibrary.R;
@@ -17,6 +23,9 @@ import io.github.plastix.prolificlibrary.util.ActivityUtils;
 public class DetailActivity extends ViewModelActivity<DetailViewModel, ActivityDetailBinding> {
 
     private static final String EXTRA_BOOK = "EXTRA_BOOK";
+
+    @Inject
+    ShareActionProvider shareActionProvider;
 
     private Book book;
 
@@ -55,5 +64,15 @@ public class DetailActivity extends ViewModelActivity<DetailViewModel, ActivityD
     @Override
     protected void injectDependencies(ApplicationComponent component) {
         component.plus(new DetailModule(this, book)).injectTo(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+
+        MenuItemCompat.setActionProvider(item, shareActionProvider);
+
+        return true;
     }
 }

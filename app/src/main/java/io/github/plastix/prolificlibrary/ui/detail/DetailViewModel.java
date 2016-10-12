@@ -17,10 +17,6 @@ public class DetailViewModel extends RxViewModel {
         this.book = book;
     }
 
-    public void onFabClick() {
-        Log.d("DetailViewModel", "Share clicked!");
-    }
-
     public void onCheckoutClick() {
         Log.d("DetailViewModel", "Checkout clicked!");
     }
@@ -43,6 +39,11 @@ public class DetailViewModel extends RxViewModel {
 
     public String getCheckedOut() {
         return book.checkedOutAuthor;
+    }
+
+    // Todo better share text
+    public String getShareText(){
+        return book.title;
     }
 
 
