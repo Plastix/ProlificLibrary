@@ -35,6 +35,11 @@ android {
         }
     }
 
+    sourceSets {
+        // Unit tests live in src/unitTest.
+        test.java.srcDir 'src/unitTests/java'
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -69,14 +74,10 @@ dependencies {
     annotationProcessor 'org.parceler:parceler:1.1.5'
 
     // Misc
-
     // Custom Retrolambda version
     retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
 
     // Testing Libraries
     testCompile 'junit:junit:4.12'
-
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+    testCompile 'org.mockito:mockito-core:2.2.1'
 }

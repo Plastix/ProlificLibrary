@@ -34,9 +34,7 @@ public class ListViewModel extends RxViewModel {
         Subscription sub = libraryService.fetchAllBooks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(books -> {
-                    booksRelay.call(books);
-                }, Throwable::printStackTrace);
+                .subscribe(books -> booksRelay.call(books), Throwable::printStackTrace);
         // TODO Handle errors gracefully
 
         unsubscribeOnDestroy(sub);
