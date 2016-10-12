@@ -12,7 +12,7 @@ public abstract class ViewModelActivity<T extends AbstractViewModel, B extends V
     protected B binding;
 
     @Inject
-    T viewModel;
+    protected T viewModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,7 +26,7 @@ public abstract class ViewModelActivity<T extends AbstractViewModel, B extends V
     @Override
     protected void onStart() {
         super.onStart();
-        viewModel.bind();
+        viewModel.bind(this);
     }
 
     // On Nougat and above noStop is no longer lazy!!

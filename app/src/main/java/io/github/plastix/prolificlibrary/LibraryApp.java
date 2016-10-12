@@ -2,13 +2,12 @@ package io.github.plastix.prolificlibrary;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 public class LibraryApp extends Application {
 
     private ApplicationComponent applicationComponent;
 
-    public static ApplicationComponent getComponent(@NonNull Context context) {
+    public static ApplicationComponent getComponent(Context context) {
         return ((LibraryApp) context.getApplicationContext()).getApplicationComponent();
     }
 
