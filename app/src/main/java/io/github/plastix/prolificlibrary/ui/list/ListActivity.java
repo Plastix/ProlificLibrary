@@ -4,19 +4,25 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 import io.github.plastix.prolificlibrary.ApplicationComponent;
 import io.github.plastix.prolificlibrary.R;
+import io.github.plastix.prolificlibrary.data.model.Book;
 import io.github.plastix.prolificlibrary.databinding.ActivityListBinding;
 import io.github.plastix.prolificlibrary.ui.base.ViewModelActivity;
-import rx.Subscription;
+import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
 public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListBinding> implements SwipeRefreshLayout.OnRefreshListener {
+
+    private final String TAG = "ListActivity";
 
     @Inject
     BookAdapter bookAdapter;
@@ -53,16 +59,31 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onBind() {
+        super.onBind();
 
-        // TODO Move this...
-        Subscription booksSub = viewModel.getBooks().subscribe(books -> {
-            binding.swipeRefresh.setRefreshing(false);
-            bookAdapter.setBooks(books);
-        });
+        modelSubscriptions.add(viewModel.getBooks().
+                subscribe(updateBooksSubscriber()));
+    }
 
-        modelSubscriptions.add(booksSub);
+    public Subscriber<List<Book>> updateBooksSubscriber() {
+        return new Subscriber<List<Book>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "Error getting books from ViewModel!", e);
+            }
+
+            @Override
+            public void onNext(List<Book> books) {
+                binding.swipeRefresh.setRefreshing(false);
+                bookAdapter.setBooks(books);
+            }
+        };
     }
 
     @Override
@@ -71,6 +92,7 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
         modelSubscriptions.clear();
     }
 
+    // SwipeRefreshLayout callback
     @Override
     public void onRefresh() {
         viewModel.fetchBooks();
@@ -101,7 +123,6 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        bookAdapter.onDestroy();
         bookAdapter = null;
         linearLayoutManager = null;
     }

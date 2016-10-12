@@ -1,6 +1,5 @@
 package io.github.plastix.prolificlibrary.ui.list;
 
-import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,17 +13,14 @@ import javax.inject.Inject;
 import io.github.plastix.prolificlibrary.R;
 import io.github.plastix.prolificlibrary.data.model.Book;
 import io.github.plastix.prolificlibrary.databinding.ItemBookBinding;
-import io.github.plastix.prolificlibrary.ui.ActivityScope;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BindingHolder> {
 
     private List<Book> books;
-    private Context context;
 
     @Inject
-    public BookAdapter(@ActivityScope Context context) {
+    public BookAdapter() {
         this.books = new ArrayList<>();
-        this.context = context;
     }
 
     @Override
@@ -53,7 +49,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BindingHolder>
         viewModel = new BookViewModel(book);
 
         binding.setViewModel(viewModel);
-        viewModel.bind(context);
+        viewModel.bind(binding.getRoot().getContext());
     }
 
     @Override
@@ -75,9 +71,5 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BindingHolder>
             super(binding.parent);
             this.binding = binding;
         }
-    }
-
-    public void onDestroy(){
-        this.context = null;
     }
 }

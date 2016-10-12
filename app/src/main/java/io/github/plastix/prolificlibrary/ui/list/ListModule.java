@@ -24,7 +24,7 @@ public class ListModule extends ActivityModule {
 
     @Provides
     @ActivityScope
-    public static BookAdapter provideBookAdapter(@ActivityScope Context context) {
-        return new BookAdapter(context);
+    public static BookAdapter provideBookAdapter() {
+        return new BookAdapter();
     }
 }
