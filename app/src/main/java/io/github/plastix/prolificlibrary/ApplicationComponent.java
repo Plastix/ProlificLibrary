@@ -4,6 +4,8 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import io.github.plastix.prolificlibrary.data.remote.ApiModule;
+import io.github.plastix.prolificlibrary.ui.add.AddComponent;
+import io.github.plastix.prolificlibrary.ui.add.AddModule;
 import io.github.plastix.prolificlibrary.ui.detail.DetailComponent;
 import io.github.plastix.prolificlibrary.ui.detail.DetailModule;
 import io.github.plastix.prolificlibrary.ui.list.ListComponent;
@@ -21,5 +23,7 @@ public interface ApplicationComponent {
     ListComponent plus(ListModule module);
 
     DetailComponent plus(DetailModule module);
+
+    AddComponent plus(AddModule module);
 
 }

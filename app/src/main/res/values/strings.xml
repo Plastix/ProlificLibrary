@@ -6,4 +6,10 @@
 
     <string name="detail_screen_title">Detail</string>
     <string name="detail_checkout_button">Checkout</string>
+
+    <string name="add_screen_title">Add Book</string>
+    <string name="add_book_title">Book Title</string>
+    <string name="add_book_author">Author</string>
+    <string name="add_book_publisher">Publisher</string>
+    <string name="add_book_categories">Categories</string>
 </resources>

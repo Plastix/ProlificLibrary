@@ -21,10 +21,14 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.detail.DetailActivity"
             android:label="@string/detail_screen_title"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".ui.add.AddActivity"
+            android:label="@string/add_screen_title"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>

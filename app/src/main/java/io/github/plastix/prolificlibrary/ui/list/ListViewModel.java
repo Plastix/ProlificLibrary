@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import io.github.plastix.prolificlibrary.data.model.Book;
 import io.github.plastix.prolificlibrary.data.remote.LibraryService;
+import io.github.plastix.prolificlibrary.ui.add.AddActivity;
 import io.github.plastix.prolificlibrary.ui.base.RxViewModel;
 import rx.Observable;
 import rx.Subscription;
@@ -42,9 +43,7 @@ public class ListViewModel extends RxViewModel {
 
 
     public View.OnClickListener onFabClick() {
-        return View -> {
-            // TODO Click to open add book screen
-        };
+        return V -> context.startActivity(AddActivity.newIntent(context));
     }
 
     public Observable<List<Book>> getBooks() {
