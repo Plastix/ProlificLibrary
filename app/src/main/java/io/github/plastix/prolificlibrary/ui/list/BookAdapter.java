@@ -1,6 +1,7 @@
 package io.github.plastix.prolificlibrary.ui.list;
 
 import android.databinding.DataBindingUtil;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import javax.inject.Inject;
 
 import io.github.plastix.prolificlibrary.R;
 import io.github.plastix.prolificlibrary.data.model.Book;
+import io.github.plastix.prolificlibrary.data.model.BookDiffCallback;
 import io.github.plastix.prolificlibrary.databinding.ItemBookBinding;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BindingHolder> {
@@ -58,9 +60,15 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BindingHolder>
     }
 
     public void setBooks(List<Book> books) {
+
+        // This might take a while on large data sets
+        // We're assuming the number of books in our library is relatively small so I'm
+        // running this on the main thread
+        final DiffUtil.Callback callback = new BookDiffCallback(books, this.books);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(callback);
+
         this.books = books;
-        // TODO Switch to DiffUtil
-        notifyDataSetChanged();
+        diffResult.dispatchUpdatesTo(this);
     }
 
     static class BindingHolder extends RecyclerView.ViewHolder {
