@@ -1,5 +1,8 @@
 package io.github.plastix.prolificlibrary.ui.list;
 
+import android.databinding.ObservableInt;
+import android.view.View;
+
 import com.jakewharton.rxrelay.BehaviorRelay;
 
 import java.util.ArrayList;
@@ -18,27 +21,37 @@ import rx.schedulers.Schedulers;
 
 public class ListViewModel extends RxViewModel {
 
+    private final ObservableInt emptyViewVisibility;
     private LibraryService libraryService;
-
     private BehaviorRelay<List<Book>> booksRelay;
 
     @Inject
     public ListViewModel(LibraryService libraryService) {
         this.libraryService = libraryService;
-        this.booksRelay = BehaviorRelay.create(new ArrayList<Book>());
+        this.booksRelay = BehaviorRelay.create();
+        this.emptyViewVisibility = new ObservableInt();
+        updateBooks(new ArrayList<>());
     }
 
+    private void updateBooks(List<Book> books) {
+        booksRelay.call(books);
+
+        if (books.size() == 0) {
+            emptyViewVisibility.set(View.VISIBLE);
+        } else {
+            emptyViewVisibility.set(View.GONE);
+        }
+    }
 
     public void fetchBooks() {
         Subscription sub = libraryService.fetchAllBooks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(books -> booksRelay.call(books), Throwable::printStackTrace);
+                .subscribe(this::updateBooks, Throwable::printStackTrace);
         // TODO Handle errors gracefully
 
         unsubscribeOnDestroy(sub);
     }
-
 
     public void onFabClick() {
         context.startActivity(AddActivity.newIntent(context));
@@ -46,6 +59,10 @@ public class ListViewModel extends RxViewModel {
 
     public Observable<List<Book>> getBooks() {
         return booksRelay.asObservable();
+    }
+
+    public ObservableInt getEmptyVisibility() {
+        return emptyViewVisibility;
     }
 
 }

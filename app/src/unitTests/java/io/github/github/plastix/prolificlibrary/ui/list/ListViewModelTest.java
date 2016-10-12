@@ -2,6 +2,9 @@ package io.github.github.plastix.prolificlibrary.ui.list;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
+
+import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -73,6 +76,37 @@ public class ListViewModelTest {
         testSubscriber.assertValueCount(1);
         testSubscriber.assertValue(books);
         testSubscriber.assertNoTerminalEvent();
+    }
+
+    @Test
+    public void emptyState_shouldBeVisibleByDefault() {
+        Assert.assertEquals(listViewModel.getEmptyVisibility().get(), View.VISIBLE);
+    }
+
+    @Test
+    public void emptyState_shouldBeGoneWhenBooksFetched() {
+        List<Book> books = Arrays.asList(mock(Book.class), mock(Book.class), mock(Book.class));
+
+        when(libraryService.fetchAllBooks()).thenReturn(
+                Single.just(books));
+
+        listViewModel.fetchBooks();
+
+        Assert.assertEquals(listViewModel.getEmptyVisibility().get(), View.GONE);
+
+    }
+
+    @Test
+    public void emptyState_shouldBeVisibleWhenEmptyList() {
+        List<Book> books = new ArrayList<>();
+
+        when(libraryService.fetchAllBooks()).thenReturn(
+                Single.just(books));
+
+        listViewModel.fetchBooks();
+
+        Assert.assertEquals(listViewModel.getEmptyVisibility().get(), View.VISIBLE);
+
     }
 
     @Test

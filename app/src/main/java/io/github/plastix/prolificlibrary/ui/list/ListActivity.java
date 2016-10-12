@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import java.util.List;
 
@@ -82,17 +81,8 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
             public void onNext(List<Book> books) {
                 binding.swipeRefresh.setRefreshing(false);
                 bookAdapter.setBooks(books);
-                updateEmptyView();
             }
         };
-    }
-
-    private void updateEmptyView() {
-        if (bookAdapter.getItemCount() == 0) {
-            binding.empty.setVisibility(View.VISIBLE);
-        } else {
-            binding.empty.setVisibility(View.GONE);
-        }
     }
 
     @Override
