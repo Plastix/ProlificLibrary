@@ -1,5 +1,8 @@
 package io.github.plastix.prolificlibrary.data.remote;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -14,8 +17,15 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    public static GsonConverterFactory provideGsonConverter() {
-        return GsonConverterFactory.create();
+    public static Gson provideGson() {
+        return new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+    }
+
+    @Provides
+    @Singleton
+    public static GsonConverterFactory provideGsonConverter(Gson gson) {
+        return GsonConverterFactory.create(gson);
     }
 
 

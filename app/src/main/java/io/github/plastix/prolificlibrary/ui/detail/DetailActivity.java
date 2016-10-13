@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
 import android.view.Menu;
@@ -19,10 +20,13 @@ import io.github.plastix.prolificlibrary.data.model.Book;
 import io.github.plastix.prolificlibrary.databinding.ActivityDetailBinding;
 import io.github.plastix.prolificlibrary.ui.base.ViewModelActivity;
 import io.github.plastix.prolificlibrary.util.ActivityUtils;
+import rx.subscriptions.CompositeSubscription;
 
-public class DetailActivity extends ViewModelActivity<DetailViewModel, ActivityDetailBinding> {
+public class DetailActivity extends ViewModelActivity<DetailViewModel, ActivityDetailBinding> implements CheckoutDialog.Listener {
 
     private static final String EXTRA_BOOK = "EXTRA_BOOK";
+
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
     ShareActionProvider shareActionProvider;
@@ -54,6 +58,34 @@ public class DetailActivity extends ViewModelActivity<DetailViewModel, ActivityD
 
     private void setupUI() {
         binding.setViewModel(viewModel);
+
+        subscriptions.add(viewModel.checkoutClicks()
+                .subscribe(this::openCheckoutDialog));
+
+        subscriptions.add(viewModel.checkoutErrors()
+                .subscribe(this::showCheckoutErrorSnackbar));
+
+        subscriptions.add(viewModel.successfulCheckOuts()
+                .subscribe(this::onSuccessfulCheckout));
+    }
+
+    private void openCheckoutDialog(Void ignored) {
+        CheckoutDialog.show(this);
+    }
+
+    private void showCheckoutErrorSnackbar(Throwable throwable) {
+        Snackbar.make(binding.coordinator, R.string.detail_error_checkout, Snackbar.LENGTH_SHORT)
+                .show();
+    }
+
+    private void onSuccessfulCheckout(Book book) {
+        Snackbar.make(binding.coordinator, R.string.detail_checkout_success, Snackbar.LENGTH_SHORT)
+                .show();
+    }
+
+    @Override
+    public void checkoutDialogClicked(String name) {
+        viewModel.checkout(name);
     }
 
     @Override
@@ -64,6 +96,12 @@ public class DetailActivity extends ViewModelActivity<DetailViewModel, ActivityD
     @Override
     protected void injectDependencies(ApplicationComponent component) {
         component.plus(new DetailModule(this, book)).injectTo(this);
+    }
+
+    @Override
+    protected void onUnbind() {
+        super.onUnbind();
+        subscriptions.clear();
     }
 
     @Override

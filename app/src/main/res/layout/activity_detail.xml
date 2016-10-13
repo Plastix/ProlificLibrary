@@ -12,6 +12,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
@@ -72,8 +73,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:onClick="@{() -> viewModel.onCheckoutClick()}"
+                android:enabled="@{viewModel.checkoutEnabled}"
+                android:onClick="@{() -> viewModel.click()}"
                 android:text="@string/detail_checkout_button"/>
+
+            <ProgressBar
+                style="@android:style/Widget.ProgressBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:indeterminate="true"
+                android:visibility="@{viewModel.loadingVisibility}"/>
 
         </LinearLayout>
 

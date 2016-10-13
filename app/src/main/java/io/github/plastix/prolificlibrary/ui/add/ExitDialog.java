@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import io.github.plastix.prolificlibrary.R;
 
+// Todo Use Support DialogFragment
 public class ExitDialog extends DialogFragment {
 
     private static final String ID = "ExitDialog";

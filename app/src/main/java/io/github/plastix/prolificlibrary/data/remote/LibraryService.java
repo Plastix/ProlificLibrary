@@ -31,9 +31,10 @@ public interface LibraryService {
     @GET("books/{id}")
     Single<Book> getBook(@Path("id") int id);
 
-    @PUT("books/{id}")
-    Single<Book> updateBook(@Path("id") int id,
-                            @Field("lastCheckedOutBy") String date
+    @FormUrlEncoded
+    @PUT("books/{id}/")
+    Single<Book> checkoutBook(@Path("id") int id,
+                              @Field("lastCheckedOutBy") String name
     );
 
     @DELETE("clean")

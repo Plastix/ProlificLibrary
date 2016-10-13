@@ -7,7 +7,20 @@
     <string name="list_fetch_error">Error fetching books!</string>
 
     <string name="detail_screen_title">Detail</string>
+    <string name="detail_checkout_text">Last Checked Out: %1$s @ %2$s</string>
+    <string name="detail_categories_text">Tags: %1$s</string>
+    <string name="detail_publisher_text">Publisher: %1$s</string>
+    <string name="detail_no_name">N/A</string>
+    <string name="detail_no_date">N/A</string>
+    <string name="detail_no_category">None</string>
+    <string name="detail_no_publisher">None</string>
     <string name="detail_checkout_button">Checkout</string>
+    <string name="detail_checkout_dialog_cancel">Cancel</string>
+    <string name="detail_checkout_dialog_confirm">Checkout</string>
+    <string name="detail_checkout_dialog_title">Checkout Book</string>
+    <string name="detail_checkout_dialog_name">Name</string>
+    <string name="detail_error_checkout">Error checking out book!</string>
+    <string name="detail_checkout_success">Successfully checked out book!</string>
     <string name="detail_menu_share">Share</string>
 
     <string name="add_screen_title">Add Book</string>
@@ -20,4 +33,6 @@
     <string name="add_exit_dialog_content">You will lose any text you input! Are you sure you want to go back?</string>
     <string name="add_exit_dialog_back">Go Back</string>
     <string name="add_exit_dialog_stay">Stay</string>
+
+
 </resources>

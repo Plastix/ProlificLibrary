@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -85,6 +86,7 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
     }
 
     public void showErrorSnackbar(Throwable throwable) {
+        Log.e("Error", "list", throwable);
         stopRefresh();
         Snackbar.make(binding.coordinator, R.string.list_fetch_error, Snackbar.LENGTH_SHORT)
                 .show();
