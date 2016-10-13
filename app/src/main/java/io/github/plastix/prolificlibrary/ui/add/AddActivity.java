@@ -4,19 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 
 import io.github.plastix.prolificlibrary.ApplicationComponent;
 import io.github.plastix.prolificlibrary.R;
 import io.github.plastix.prolificlibrary.databinding.ActivityAddBinding;
 import io.github.plastix.prolificlibrary.ui.base.ViewModelActivity;
 import io.github.plastix.prolificlibrary.util.ActivityUtils;
+import rx.subscriptions.CompositeSubscription;
 
 public class AddActivity extends ViewModelActivity<AddViewModel, ActivityAddBinding> {
 
-    public static Intent newIntent(Context context) {
-        Intent intent = new Intent(context, AddActivity.class);
+    private CompositeSubscription subscriptions = new CompositeSubscription();
 
-        return intent;
+    public static Intent newIntent(Context context) {
+        return new Intent(context, AddActivity.class);
     }
 
     @Override
@@ -34,6 +36,41 @@ public class AddActivity extends ViewModelActivity<AddViewModel, ActivityAddBind
 
     private void setupUI() {
         binding.setViewModel(viewModel);
+
+        subscriptions.add(viewModel
+                .showErrorSnackbar()
+                .subscribe(this::makeErrorSnackbar));
+
+        subscriptions.add(viewModel
+                .onSubmitSuccess()
+                .subscribe(this::bookSubmitted));
+    }
+
+    public void makeErrorSnackbar(Throwable error) {
+        Snackbar.make(binding.coordinator, R.string.add_submit_error, Snackbar.LENGTH_SHORT)
+                .show();
+    }
+
+    public void bookSubmitted() {
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // If the user input some data show warning dialog before backing out
+        if (viewModel.hasData()) {
+            ExitDialog.show(this);
+        } else {
+            // Allow back to happen normally
+            super.onBackPressed();
+        }
+    }
+
+
+    @Override
+    protected void onUnbind() {
+        super.onUnbind();
+        subscriptions.clear();
     }
 
     @Override

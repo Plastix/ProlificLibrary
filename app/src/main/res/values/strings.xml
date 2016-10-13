@@ -14,4 +14,9 @@
     <string name="add_book_author">Author</string>
     <string name="add_book_publisher">Publisher</string>
     <string name="add_book_categories">Categories</string>
+    <string name="add_submit_error">Error submitting book!</string>
+    <string name="add_exit_dialog_title">Leave Screen?</string>
+    <string name="add_exit_dialog_content">You will lose any text you input! Are you sure you want to go back?</string>
+    <string name="add_exit_dialog_back">Go Back</string>
+    <string name="add_exit_dialog_stay">Stay</string>
 </resources>

@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 
 public class ActivityUtils {
 
+    private ActivityUtils() {
+    }
+
     public static void setBackEnabled(AppCompatActivity activity) {
         ActionBar actionBar = activity.getSupportActionBar();
         if (actionBar != null) {
