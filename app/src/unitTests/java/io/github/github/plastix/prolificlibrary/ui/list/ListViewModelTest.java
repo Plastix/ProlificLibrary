@@ -72,6 +72,20 @@ public class ListViewModelTest {
     }
 
     @Test
+    public void fetchBooks_shouldError() {
+        TestSubscriber<Throwable> testSubscriber = new TestSubscriber<>();
+        Throwable error = new Throwable();
+        when(libraryService.fetchAllBooks()).thenReturn(
+                Single.error(error));
+
+        listViewModel.networkErrors().subscribe(testSubscriber);
+        listViewModel.fetchBooks();
+
+        testSubscriber.assertValueCount(1);
+        testSubscriber.assertValue(error);
+    }
+
+    @Test
     public void emptyState_shouldBeVisibleByDefault() {
         Assert.assertEquals(listViewModel.getEmptyVisibility().get(), View.VISIBLE);
     }

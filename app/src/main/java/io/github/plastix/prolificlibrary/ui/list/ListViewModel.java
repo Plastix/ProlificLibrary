@@ -24,6 +24,7 @@ public class ListViewModel extends RxViewModel {
     private final ObservableInt emptyViewVisibility = new ObservableInt();
     private BehaviorRelay<List<Book>> booksRelay = BehaviorRelay.create();
     private PublishRelay<Void> fabClicks = PublishRelay.create();
+    private PublishRelay<Throwable> networkErrors = PublishRelay.create();
 
     private LibraryService libraryService;
 
@@ -47,8 +48,7 @@ public class ListViewModel extends RxViewModel {
         Subscription sub = libraryService.fetchAllBooks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::updateBooks, Throwable::printStackTrace);
-        // TODO Handle errors gracefully
+                .subscribe(this::updateBooks, throwable -> networkErrors.call(throwable));
 
         unsubscribeOnDestroy(sub);
     }
@@ -65,8 +65,13 @@ public class ListViewModel extends RxViewModel {
         return booksRelay.asObservable();
     }
 
+    public Observable<Throwable> networkErrors(){
+        return networkErrors;
+    }
+
     public ObservableInt getEmptyVisibility() {
         return emptyViewVisibility;
     }
+
 
 }

@@ -2,6 +2,7 @@ package io.github.plastix.prolificlibrary.ui.list;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
@@ -65,15 +66,28 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
 
         subscriptions.add(viewModel.fabClicks()
                 .subscribe(this::fabClicked));
+
+        subscriptions.add(viewModel.networkErrors()
+                .subscribe(this::showErrorSnackbar));
     }
 
     public void updateBooks(List<Book> books) {
-        binding.swipeRefresh.setRefreshing(false);
+        stopRefresh();
         bookAdapter.setBooks(books);
+    }
+
+    private void stopRefresh() {
+        binding.swipeRefresh.setRefreshing(false);
     }
 
     public void fabClicked(Void ignore) {
         startActivity(AddActivity.newIntent(this));
+    }
+
+    public void showErrorSnackbar(Throwable throwable) {
+        stopRefresh();
+        Snackbar.make(binding.coordinator, R.string.list_fetch_error, Snackbar.LENGTH_SHORT)
+                .show();
     }
 
     @Override

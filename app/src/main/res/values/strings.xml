@@ -4,6 +4,7 @@
     <string name="empty_view_text">No Library books downloaded!</string>
 
     <string name="list_screen_title">Books</string>
+    <string name="list_fetch_error">Error fetching books!</string>
 
     <string name="detail_screen_title">Detail</string>
     <string name="detail_checkout_button">Checkout</string>
