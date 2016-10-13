@@ -33,8 +33,8 @@ public class BookViewModelTest {
         book.title = "Some Title";
         book.author = "Some Author";
 
-        viewModel = new BookViewModel(book);
-        viewModel.bind(context);
+        viewModel = new BookViewModel(book, context);
+        viewModel.bind();
     }
 
     @Test

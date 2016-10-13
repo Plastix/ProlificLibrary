@@ -48,10 +48,10 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BindingHolder>
             viewModel.unbind();
         }
 
-        viewModel = new BookViewModel(book);
+        viewModel = new BookViewModel(book, binding.getRoot().getContext());
 
         binding.setViewModel(viewModel);
-        viewModel.bind(binding.getRoot().getContext());
+        viewModel.bind();
     }
 
     @Override

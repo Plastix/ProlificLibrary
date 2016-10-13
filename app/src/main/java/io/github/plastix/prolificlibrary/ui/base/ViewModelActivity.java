@@ -13,6 +13,7 @@ import javax.inject.Provider;
 
 /**
  * Activity that
+ *
  * @param <T> ViewModel type
  * @param <B> DataBinding type
  */
@@ -50,13 +51,8 @@ public abstract class ViewModelActivity<T extends AbstractViewModel, B extends V
     }
 
     @CallSuper
-    protected void onBind(){
-        viewModel.bind(this);
-    }
-
-    @CallSuper
-    protected void onUnbind(){
-        viewModel.unbind();
+    protected void onBind() {
+        viewModel.bind();
     }
 
     // On Nougat and above noStop is no longer lazy!!
@@ -68,6 +64,11 @@ public abstract class ViewModelActivity<T extends AbstractViewModel, B extends V
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             onUnbind();
         }
+    }
+
+    @CallSuper
+    protected void onUnbind() {
+        viewModel.unbind();
     }
 
     @Override

@@ -4,7 +4,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -16,8 +15,8 @@ import io.github.plastix.prolificlibrary.ApplicationComponent;
 import io.github.plastix.prolificlibrary.R;
 import io.github.plastix.prolificlibrary.data.model.Book;
 import io.github.plastix.prolificlibrary.databinding.ActivityListBinding;
+import io.github.plastix.prolificlibrary.ui.add.AddActivity;
 import io.github.plastix.prolificlibrary.ui.base.ViewModelActivity;
-import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
 public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListBinding> implements SwipeRefreshLayout.OnRefreshListener {
@@ -52,9 +51,6 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
     protected void onBind() {
         super.onBind();
         setupUI();
-
-        subscriptions.add(viewModel.getBooks().
-                subscribe(updateBooksSubscriber()));
     }
 
     private void setupUI() {
@@ -63,26 +59,21 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
 
         binding.recycler.setLayoutManager(linearLayoutManager);
         binding.recycler.setAdapter(bookAdapter);
+
+        subscriptions.add(viewModel.getBooks()
+                .subscribe(this::updateBooks));
+
+        subscriptions.add(viewModel.fabClicks()
+                .subscribe(this::fabClicked));
     }
 
-    public Subscriber<List<Book>> updateBooksSubscriber() {
-        return new Subscriber<List<Book>>() {
-            @Override
-            public void onCompleted() {
+    public void updateBooks(List<Book> books) {
+        binding.swipeRefresh.setRefreshing(false);
+        bookAdapter.setBooks(books);
+    }
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG, "Error getting books from ViewModel!", e);
-            }
-
-            @Override
-            public void onNext(List<Book> books) {
-                binding.swipeRefresh.setRefreshing(false);
-                bookAdapter.setBooks(books);
-            }
-        };
+    public void fabClicked(Void ignore) {
+        startActivity(AddActivity.newIntent(this));
     }
 
     @Override

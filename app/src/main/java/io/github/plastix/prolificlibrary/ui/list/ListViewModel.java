@@ -4,6 +4,7 @@ import android.databinding.ObservableInt;
 import android.view.View;
 
 import com.jakewharton.rxrelay.BehaviorRelay;
+import com.jakewharton.rxrelay.PublishRelay;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,6 @@ import javax.inject.Inject;
 
 import io.github.plastix.prolificlibrary.data.model.Book;
 import io.github.plastix.prolificlibrary.data.remote.LibraryService;
-import io.github.plastix.prolificlibrary.ui.add.AddActivity;
 import io.github.plastix.prolificlibrary.ui.base.RxViewModel;
 import rx.Observable;
 import rx.Subscription;
@@ -21,15 +21,15 @@ import rx.schedulers.Schedulers;
 
 public class ListViewModel extends RxViewModel {
 
-    private final ObservableInt emptyViewVisibility;
+    private final ObservableInt emptyViewVisibility = new ObservableInt();
+    private BehaviorRelay<List<Book>> booksRelay = BehaviorRelay.create();
+    private PublishRelay<Void> fabClicks = PublishRelay.create();
+
     private LibraryService libraryService;
-    private BehaviorRelay<List<Book>> booksRelay;
 
     @Inject
     public ListViewModel(LibraryService libraryService) {
         this.libraryService = libraryService;
-        this.booksRelay = BehaviorRelay.create();
-        this.emptyViewVisibility = new ObservableInt();
         updateBooks(new ArrayList<>());
     }
 
@@ -54,7 +54,11 @@ public class ListViewModel extends RxViewModel {
     }
 
     public void onFabClick() {
-        context.startActivity(AddActivity.newIntent(context));
+        fabClicks.call(null);
+    }
+
+    public Observable<Void> fabClicks() {
+        return fabClicks;
     }
 
     public Observable<List<Book>> getBooks() {

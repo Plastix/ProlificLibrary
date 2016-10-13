@@ -1,6 +1,5 @@
 package io.github.github.plastix.prolificlibrary.ui.add;
 
-import android.content.Context;
 import android.view.View;
 
 import junit.framework.Assert;
@@ -40,9 +39,6 @@ public class AddViewModelTests {
         public RxSchedulersOverrideRule rxSchedulersOverrideRule = new RxSchedulersOverrideRule();
 
         @Mock
-        Context context;
-
-        @Mock
         LibraryService libraryService;
 
         AddViewModel addViewModel;
@@ -53,7 +49,7 @@ public class AddViewModelTests {
             MockitoAnnotations.initMocks(this);
 
             addViewModel = new AddViewModel(libraryService);
-            addViewModel.bind(context);
+            addViewModel.bind();
         }
 
         @Test
@@ -115,7 +111,7 @@ public class AddViewModelTests {
                     .thenReturn(Single.error(error));
 
             TestSubscriber<Throwable> testSubscriber = TestSubscriber.create();
-            addViewModel.showErrorSnackbar().subscribe(testSubscriber);
+            addViewModel.networkErrors().subscribe(testSubscriber);
 
             addViewModel.submit();
 
@@ -142,9 +138,6 @@ public class AddViewModelTests {
 
         @Parameterized.Parameter(value = 3)
         public String categories;
-
-        @Mock
-        Context context;
 
         @Mock
         LibraryService libraryService;
@@ -179,7 +172,7 @@ public class AddViewModelTests {
             MockitoAnnotations.initMocks(this);
 
             addViewModel = new AddViewModel(libraryService);
-            addViewModel.bind(context);
+            addViewModel.bind();
         }
 
         @Test

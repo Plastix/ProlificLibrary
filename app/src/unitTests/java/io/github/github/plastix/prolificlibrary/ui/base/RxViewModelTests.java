@@ -1,12 +1,9 @@
 package io.github.github.plastix.prolificlibrary.ui.base;
 
-import android.content.Context;
-
 import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 
 import io.github.plastix.prolificlibrary.ui.base.RxViewModel;
 import rx.Subscription;
@@ -14,15 +11,12 @@ import rx.subscriptions.CompositeSubscription;
 
 public class RxViewModelTests {
 
-    @Mock
-    Context context;
-
     SomeRxViewModel someRxViewModel;
 
     @Before
     public void setUp() {
         someRxViewModel = new SomeRxViewModel();
-        someRxViewModel.bind(context);
+        someRxViewModel.bind();
     }
 
     @Test

@@ -1,6 +1,5 @@
 package io.github.plastix.prolificlibrary.ui.add;
 
-import android.content.Context;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
@@ -65,9 +64,7 @@ public class AddViewModel extends RxViewModel {
     }
 
     @Override
-    public void bind(Context context) {
-        super.bind(context);
-
+    public void bind() {
         unsubscribeOnUnbind(
                 Observable.combineLatest(RxUtils.toObservable(bookTitle),
                         RxUtils.toObservable(bookAuthor),
@@ -114,7 +111,7 @@ public class AddViewModel extends RxViewModel {
                 StringUtils.isNotNullOrEmpty(bookCategories.get());
     }
 
-    public Observable<Throwable> showErrorSnackbar() {
+    public Observable<Throwable> networkErrors() {
         return networkError.asObservable();
     }
 }

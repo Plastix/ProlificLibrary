@@ -38,7 +38,7 @@ public class AddActivity extends ViewModelActivity<AddViewModel, ActivityAddBind
         binding.setViewModel(viewModel);
 
         subscriptions.add(viewModel
-                .showErrorSnackbar()
+                .networkErrors()
                 .subscribe(this::makeErrorSnackbar));
 
         subscriptions.add(viewModel

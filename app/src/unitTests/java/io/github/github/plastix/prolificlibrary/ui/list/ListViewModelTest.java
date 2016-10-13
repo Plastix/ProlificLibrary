@@ -1,7 +1,5 @@
 package io.github.github.plastix.prolificlibrary.ui.list;
 
-import android.content.Context;
-import android.content.Intent;
 import android.view.View;
 
 import junit.framework.Assert;
@@ -23,9 +21,7 @@ import io.github.plastix.prolificlibrary.ui.list.ListViewModel;
 import rx.Single;
 import rx.observers.TestSubscriber;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ListViewModelTest {
@@ -36,9 +32,6 @@ public class ListViewModelTest {
     @Mock
     LibraryService libraryService;
 
-    @Mock
-    Context context;
-
     ListViewModel listViewModel;
 
     TestSubscriber<List<Book>> testSubscriber;
@@ -48,7 +41,7 @@ public class ListViewModelTest {
         MockitoAnnotations.initMocks(this);
 
         listViewModel = new ListViewModel(libraryService);
-        listViewModel.bind(context);
+        listViewModel.bind();
 
         testSubscriber = new TestSubscriber<>();
     }
@@ -110,9 +103,20 @@ public class ListViewModelTest {
     }
 
     @Test
-    public void fabClick_shouldStartActivity() {
+    public void fabClick_noCompletionByDefult() {
+        TestSubscriber<Void> test = TestSubscriber.create();
+        listViewModel.fabClicks().subscribe(test);
+
+        test.assertNoValues();
+    }
+
+    @Test
+    public void fabClick_shouldComplete() {
+        TestSubscriber<Void> test = TestSubscriber.create();
+        listViewModel.fabClicks().subscribe(test);
+
         listViewModel.onFabClick();
 
-        verify(context).startActivity(any(Intent.class));
+        test.assertValue(null);
     }
 }
