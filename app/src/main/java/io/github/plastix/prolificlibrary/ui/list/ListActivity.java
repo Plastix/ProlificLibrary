@@ -23,8 +23,6 @@ import rx.subscriptions.CompositeSubscription;
 
 public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListBinding> implements SwipeRefreshLayout.OnRefreshListener {
 
-    private final String TAG = "ListActivity";
-
     @Inject
     BookAdapter bookAdapter;
 
@@ -75,6 +73,10 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
         subscriptions.add(viewModel.deleteErrors()
                 .subscribe(throwable ->
                         showErrorSnackbar(R.string.list_delete_error)));
+
+        // Fetch books on every bind
+        // This makes sure our list stays updated
+        viewModel.fetchBooks();
     }
 
     private void showErrorSnackbar(@StringRes int message) {

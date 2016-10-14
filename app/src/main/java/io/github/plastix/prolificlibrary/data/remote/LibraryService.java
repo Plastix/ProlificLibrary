@@ -41,4 +41,8 @@ public interface LibraryService {
     // See https://github.com/square/retrofit/issues/2034
     @DELETE("clean/")
     Single<Void> clearAllBooks();
+
+    // Same note as above ^
+    @DELETE("books/{id}/")
+    Single<Void> deleteBook(@Path("id") int id);
 }

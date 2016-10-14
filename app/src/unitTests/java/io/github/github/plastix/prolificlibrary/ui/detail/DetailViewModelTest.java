@@ -24,6 +24,7 @@ import rx.observers.TestSubscriber;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class DetailViewModelTest {
@@ -218,4 +219,39 @@ public class DetailViewModelTest {
         testSubscriber.assertValue(error);
         testSubscriber.assertValueCount(1);
     }
+
+    @Test
+    public void delete_deletesBook() {
+        TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
+
+        when(libraryService.deleteBook(anyInt()))
+                .thenReturn(Single.just(null));
+
+        viewModel.deletions().subscribe(testSubscriber);
+
+        viewModel.deleteBook();
+
+        verify(libraryService).deleteBook(book.id);
+
+        testSubscriber.assertValueCount(1);
+    }
+
+    @Test
+    public void delete_emitsError() {
+        TestSubscriber<Throwable> testSubscriber = new TestSubscriber<>();
+
+        Throwable error = new Throwable();
+
+        when(libraryService.deleteBook(anyInt()))
+                .thenReturn(Single.error(error));
+
+        viewModel.deleteErrors().subscribe(testSubscriber);
+
+        viewModel.deleteBook();
+
+        verify(libraryService).deleteBook(book.id);
+
+        testSubscriber.assertValue(error);
+    }
+
 }

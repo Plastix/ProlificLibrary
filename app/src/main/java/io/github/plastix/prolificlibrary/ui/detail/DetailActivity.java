@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
@@ -63,24 +64,29 @@ public class DetailActivity extends ViewModelActivity<DetailViewModel, ActivityD
                 .subscribe(this::openCheckoutDialog));
 
         subscriptions.add(viewModel.checkoutErrors()
-                .subscribe(this::showCheckoutErrorSnackbar));
+                .subscribe(throwable -> makeSnackbar(R.string.detail_error_checkout)));
 
         subscriptions.add(viewModel.successfulCheckOuts()
-                .subscribe(this::onSuccessfulCheckout));
+                .subscribe(book1 -> makeSnackbar(R.string.detail_checkout_success)));
+
+        subscriptions.add(viewModel.deletions()
+                .subscribe(this::deleteBook));
+
+        subscriptions.add(viewModel.deleteErrors()
+                .subscribe(throwable -> makeSnackbar(R.string.detail_error_delete)));
+    }
+
+    private void makeSnackbar(@StringRes int message) {
+        Snackbar.make(binding.coordinator, message, Snackbar.LENGTH_SHORT)
+                .show();
     }
 
     private void openCheckoutDialog(Void ignored) {
         CheckoutDialog.show(this);
     }
 
-    private void showCheckoutErrorSnackbar(Throwable throwable) {
-        Snackbar.make(binding.coordinator, R.string.detail_error_checkout, Snackbar.LENGTH_SHORT)
-                .show();
-    }
-
-    private void onSuccessfulCheckout(Book book) {
-        Snackbar.make(binding.coordinator, R.string.detail_checkout_success, Snackbar.LENGTH_SHORT)
-                .show();
+    private void deleteBook(Void ignored) {
+        finish();
     }
 
     @Override
@@ -112,5 +118,17 @@ public class DetailActivity extends ViewModelActivity<DetailViewModel, ActivityD
         MenuItemCompat.setActionProvider(item, shareActionProvider);
 
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if(id == R.id.menu_item_delete_book){
+            viewModel.deleteBook();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

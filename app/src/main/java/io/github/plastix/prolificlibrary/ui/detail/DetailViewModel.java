@@ -34,6 +34,8 @@ public class DetailViewModel extends RxViewModel {
     private PublishRelay<Void> checkoutClicks = PublishRelay.create();
     private PublishRelay<Book> checkOuts = PublishRelay.create();
     private PublishRelay<Throwable> checkoutErrors = PublishRelay.create();
+    private PublishRelay<Void> deletions = PublishRelay.create();
+    private PublishRelay<Throwable> deleteErrors = PublishRelay.create();
 
     @Inject
     public DetailViewModel(@ActivityScope Book book,
@@ -93,7 +95,7 @@ public class DetailViewModel extends RxViewModel {
     }
 
     public void checkout(String name) {
-        libraryService.checkoutBook(book.id, name)
+        unsubscribeOnDestroy(libraryService.checkoutBook(book.id, name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> {
@@ -104,7 +106,16 @@ public class DetailViewModel extends RxViewModel {
                     checkoutEnabled.set(true);
                     loadingVisibility.set(View.GONE);
                 })
-                .subscribe(checkOuts, checkoutErrors);
+                .subscribe(checkOuts, checkoutErrors)
+        );
+    }
+
+    public void deleteBook() {
+        unsubscribeOnDestroy(libraryService.deleteBook(book.id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(deletions, deleteErrors)
+        );
     }
 
     public Observable<Void> checkoutClicks() {
@@ -117,6 +128,14 @@ public class DetailViewModel extends RxViewModel {
 
     public Observable<Throwable> checkoutErrors() {
         return checkoutErrors;
+    }
+
+    public Observable<Throwable> deleteErrors() {
+        return deleteErrors;
+    }
+
+    public Observable<Void> deletions() {
+        return deletions;
     }
 
 
