@@ -12,7 +12,7 @@ import io.github.plastix.prolificlibrary.ui.base.ActivityModule;
 @Module
 public class AddModule extends ActivityModule {
 
-    private Book book;
+    private final Book book;
 
     public AddModule(AppCompatActivity activity, Book book) {
         super(activity);

@@ -110,7 +110,7 @@
                     android:layout_gravity="center_horizontal"
                     android:enabled="@{viewModel.submitEnabled}"
                     android:onClick="@{() -> viewModel.submit()}"
-                    android:text="Submit"/>
+                    android:text="@string/add_button_submit"/>
 
                 <ProgressBar
                     style="@android:style/Widget.ProgressBar.Small"

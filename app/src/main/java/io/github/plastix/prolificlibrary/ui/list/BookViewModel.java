@@ -8,7 +8,7 @@ import io.github.plastix.prolificlibrary.ui.detail.DetailActivity;
 
 public class BookViewModel extends AbstractViewModel {
 
-    private Book book;
+    private final Book book;
     private Context context;
 
     public BookViewModel(Book book, Context context) {

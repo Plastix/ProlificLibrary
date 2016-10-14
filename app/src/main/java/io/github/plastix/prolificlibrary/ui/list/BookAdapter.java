@@ -73,7 +73,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BindingHolder>
 
     static class BindingHolder extends RecyclerView.ViewHolder {
 
-        private ItemBookBinding binding;
+        private final ItemBookBinding binding;
 
         BindingHolder(ItemBookBinding binding) {
             super(binding.parent);

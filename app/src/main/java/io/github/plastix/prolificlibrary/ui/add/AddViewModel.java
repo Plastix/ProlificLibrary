@@ -36,9 +36,9 @@ public class AddViewModel extends RxViewModel {
     private final PublishRelay<Throwable> networkError = PublishRelay.create();
     private final PublishRelay<Book> submitStatus = PublishRelay.create();
 
-    private LibraryService libraryService;
-    private Resources resources;
-    private Book book;
+    private final LibraryService libraryService;
+    private final Resources resources;
+    private final Book book;
 
     @Inject
     public AddViewModel(LibraryService libraryService,

@@ -29,7 +29,7 @@ public class ListActivity extends ViewModelActivity<ListViewModel, ActivityListB
     @Inject
     LinearLayoutManager linearLayoutManager;
 
-    private CompositeSubscription subscriptions = new CompositeSubscription();
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

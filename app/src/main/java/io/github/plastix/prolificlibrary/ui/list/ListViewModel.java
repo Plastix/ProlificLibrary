@@ -21,12 +21,12 @@ import rx.schedulers.Schedulers;
 public class ListViewModel extends RxViewModel {
 
     private final ObservableInt emptyViewVisibility = new ObservableInt();
-    private BehaviorRelay<List<Book>> booksRelay = BehaviorRelay.create();
-    private PublishRelay<Void> fabClicks = PublishRelay.create();
-    private PublishRelay<Throwable> fetchErrors = PublishRelay.create();
-    private PublishRelay<Throwable> deleteErrors = PublishRelay.create();
+    private final BehaviorRelay<List<Book>> booksRelay = BehaviorRelay.create();
+    private final PublishRelay<Void> fabClicks = PublishRelay.create();
+    private final PublishRelay<Throwable> fetchErrors = PublishRelay.create();
+    private final PublishRelay<Throwable> deleteErrors = PublishRelay.create();
 
-    private LibraryService libraryService;
+    private final LibraryService libraryService;
 
     @Inject
     public ListViewModel(LibraryService libraryService) {

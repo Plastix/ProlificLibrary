@@ -5,8 +5,8 @@ import rx.subscriptions.CompositeSubscription;
 
 public class RxViewModel extends AbstractViewModel {
 
-    protected CompositeSubscription foregroundTasks = new CompositeSubscription();
-    protected CompositeSubscription backgroundTasks = new CompositeSubscription();
+    protected final CompositeSubscription foregroundTasks = new CompositeSubscription();
+    protected final CompositeSubscription backgroundTasks = new CompositeSubscription();
 
     /**
      * Add a subscription to be automatically un-subscribed when the current viewModel is unbound. This

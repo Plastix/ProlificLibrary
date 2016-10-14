@@ -12,7 +12,7 @@ public class ViewModelLoader<T extends AbstractViewModel> extends Loader<T> {
 
     private T viewModel;
 
-    private Provider<T> viewModelFactory;
+    private final Provider<T> viewModelFactory;
 
 
     @Inject

@@ -21,7 +21,7 @@ public class AddActivity extends ViewModelActivity<AddViewModel, ActivityAddBind
 
     public final static String EXTRA_BOOK = "EXTRA_BOOK";
 
-    private CompositeSubscription subscriptions = new CompositeSubscription();
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
     private Book book;
 
     public static Intent newIntent(Context context) {

@@ -10,7 +10,7 @@ import io.github.plastix.prolificlibrary.ui.ActivityScope;
 @Module
 public class ActivityModule {
 
-    private AppCompatActivity activity;
+    private final AppCompatActivity activity;
 
     public ActivityModule(AppCompatActivity activity) {
         this.activity = activity;
