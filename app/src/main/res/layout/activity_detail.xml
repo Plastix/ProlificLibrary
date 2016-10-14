@@ -9,10 +9,10 @@
     </data>
 
     <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinator"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
@@ -61,7 +61,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.categories}"/>
+                android:text="@{viewModel.categories}"
+                android:textSize="16sp"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -75,7 +76,8 @@
                 android:layout_gravity="center_horizontal"
                 android:enabled="@{viewModel.checkoutEnabled}"
                 android:onClick="@{() -> viewModel.click()}"
-                android:text="@string/detail_checkout_button"/>
+                android:text="@string/detail_checkout_button"
+                android:textSize="16sp"/>
 
             <ProgressBar
                 style="@android:style/Widget.ProgressBar.Small"
