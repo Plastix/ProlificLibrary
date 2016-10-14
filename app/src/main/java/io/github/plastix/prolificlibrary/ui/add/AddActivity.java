@@ -1,13 +1,17 @@
 package io.github.plastix.prolificlibrary.ui.add;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 
+import org.parceler.Parcels;
+
 import io.github.plastix.prolificlibrary.ApplicationComponent;
 import io.github.plastix.prolificlibrary.R;
+import io.github.plastix.prolificlibrary.data.model.Book;
 import io.github.plastix.prolificlibrary.databinding.ActivityAddBinding;
 import io.github.plastix.prolificlibrary.ui.base.ViewModelActivity;
 import io.github.plastix.prolificlibrary.util.ActivityUtils;
@@ -15,14 +19,25 @@ import rx.subscriptions.CompositeSubscription;
 
 public class AddActivity extends ViewModelActivity<AddViewModel, ActivityAddBinding> {
 
+    public final static String EXTRA_BOOK = "EXTRA_BOOK";
+
     private CompositeSubscription subscriptions = new CompositeSubscription();
+    private Book book;
 
     public static Intent newIntent(Context context) {
         return new Intent(context, AddActivity.class);
     }
 
+    public static Intent newIntent(Context context, Book book) {
+        Intent intent = new Intent(context, AddActivity.class);
+        intent.putExtra(EXTRA_BOOK, Parcels.wrap(book));
+
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        book = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_BOOK));
         super.onCreate(savedInstanceState);
         setSupportActionBar(binding.toolbar);
         ActivityUtils.setBackEnabled(this);
@@ -36,6 +51,8 @@ public class AddActivity extends ViewModelActivity<AddViewModel, ActivityAddBind
 
     private void setupUI() {
         binding.setViewModel(viewModel);
+
+        setTitle(viewModel.getScreenTitle());
 
         subscriptions.add(viewModel
                 .networkErrors()
@@ -51,7 +68,11 @@ public class AddActivity extends ViewModelActivity<AddViewModel, ActivityAddBind
                 .show();
     }
 
-    public void bookSubmitted() {
+    public void bookSubmitted(Book book) {
+        // If the book was modified, we want to send the updated book back to any previous Activity
+        Intent data = new Intent();
+        data.putExtra(EXTRA_BOOK, Parcels.wrap(book));
+        setResult(Activity.RESULT_OK, data);
         finish();
     }
 
@@ -80,6 +101,6 @@ public class AddActivity extends ViewModelActivity<AddViewModel, ActivityAddBind
 
     @Override
     protected void injectDependencies(ApplicationComponent component) {
-        component.plus(new AddModule(this)).injectTo(this);
+        component.plus(new AddModule(this, book)).injectTo(this);
     }
 }

@@ -3,8 +3,13 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_item_delete_book"
-        android:title="@string/detail_menu_delete"
+    android:id="@+id/menu_item_delete_book"
+    android:title="@string/detail_menu_delete"
+    app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menu_item_edit_book"
+        android:title="@string/detail_menu_edit"
         app:showAsAction="ifRoom"/>
 
     <item

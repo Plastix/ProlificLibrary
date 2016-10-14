@@ -1,24 +1,28 @@
 package io.github.plastix.prolificlibrary.ui.add;
 
+import android.content.res.Resources;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.jakewharton.rxrelay.PublishRelay;
 
 import javax.inject.Inject;
 
+import io.github.plastix.prolificlibrary.R;
+import io.github.plastix.prolificlibrary.data.model.Book;
 import io.github.plastix.prolificlibrary.data.remote.LibraryService;
+import io.github.plastix.prolificlibrary.ui.ActivityScope;
 import io.github.plastix.prolificlibrary.ui.base.RxViewModel;
 import io.github.plastix.prolificlibrary.util.RxUtils;
 import io.github.plastix.prolificlibrary.util.StringUtils;
-import rx.Completable;
 import rx.Observable;
+import rx.Single;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subjects.PublishSubject;
 
 public class AddViewModel extends RxViewModel {
 
@@ -30,13 +34,19 @@ public class AddViewModel extends RxViewModel {
     private final ObservableField<String> bookCategories = new ObservableField<>();
 
     private final PublishRelay<Throwable> networkError = PublishRelay.create();
-    private final PublishSubject submitStatus = PublishSubject.create();
+    private final PublishRelay<Book> submitStatus = PublishRelay.create();
 
     private LibraryService libraryService;
+    private Resources resources;
+    private Book book;
 
     @Inject
-    public AddViewModel(LibraryService libraryService) {
+    public AddViewModel(LibraryService libraryService,
+                        Resources resources,
+                        @ActivityScope @Nullable Book book) {
         this.libraryService = libraryService;
+        this.resources = resources;
+        this.book = book;
     }
 
     public ObservableBoolean getSubmitEnabled() {
@@ -76,11 +86,27 @@ public class AddViewModel extends RxViewModel {
                                 StringUtils.isNotNullOrEmpty(s4)
                 ).subscribe(submitEnabled::set)
         );
+
+        if (isEditingBook()) {
+            populateFields(book);
+        }
+    }
+
+    private boolean isEditingBook() {
+        return book != null;
+    }
+
+    private void populateFields(Book book) {
+        if (book != null) {
+            bookTitle.set(book.title);
+            bookAuthor.set(book.author);
+            bookCategories.set(book.categories);
+            bookPublisher.set(book.publisher);
+        }
     }
 
     public void submit() {
-        Subscription subscription = libraryService.submitBook(bookTitle.get(),
-                bookCategories.get(), bookTitle.get(), bookPublisher.get())
+        Subscription subscription = getApiCall()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> {
@@ -89,7 +115,7 @@ public class AddViewModel extends RxViewModel {
                 })
                 .subscribe(book -> {
                     progressVisibility.set(View.GONE);
-                    submitStatus.onCompleted();
+                    submitStatus.call(book);
                 }, throwable -> {
                     progressVisibility.set(View.GONE);
                     submitEnabled.set(true);
@@ -99,9 +125,20 @@ public class AddViewModel extends RxViewModel {
         unsubscribeOnDestroy(subscription);
     }
 
-    public Completable onSubmitSuccess() {
-        // Successful submissions only happen once per screen. Expose this as a completable
-        return submitStatus.toCompletable();
+    // Switches the API call between adding or updating a book depending on if the viewModel has
+    // a copy of a book model
+    private Single<Book> getApiCall() {
+        if (!isEditingBook()) {
+            return libraryService.submitBook(bookAuthor.get(),
+                    bookCategories.get(), bookTitle.get(), bookPublisher.get());
+        } else {
+            return libraryService.updateBook(String.valueOf(book.id), bookAuthor.get(),
+                    bookCategories.get(), bookTitle.get(), bookPublisher.get(), null);
+        }
+    }
+
+    public Observable<Book> onSubmitSuccess() {
+        return submitStatus;
     }
 
     public boolean hasData() {
@@ -109,6 +146,14 @@ public class AddViewModel extends RxViewModel {
                 StringUtils.isNotNullOrEmpty(bookAuthor.get()) ||
                 StringUtils.isNotNullOrEmpty(bookPublisher.get()) ||
                 StringUtils.isNotNullOrEmpty(bookCategories.get());
+    }
+
+    public String getScreenTitle() {
+        if (isEditingBook()) {
+            return resources.getString(R.string.add_screen_title_edit);
+        } else {
+            return resources.getString(R.string.add_screen_title);
+        }
     }
 
     public Observable<Throwable> networkErrors() {

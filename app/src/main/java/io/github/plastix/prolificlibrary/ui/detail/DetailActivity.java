@@ -1,5 +1,6 @@
 package io.github.plastix.prolificlibrary.ui.detail;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -19,6 +20,7 @@ import io.github.plastix.prolificlibrary.ApplicationComponent;
 import io.github.plastix.prolificlibrary.R;
 import io.github.plastix.prolificlibrary.data.model.Book;
 import io.github.plastix.prolificlibrary.databinding.ActivityDetailBinding;
+import io.github.plastix.prolificlibrary.ui.add.AddActivity;
 import io.github.plastix.prolificlibrary.ui.base.ViewModelActivity;
 import io.github.plastix.prolificlibrary.util.ActivityUtils;
 import rx.subscriptions.CompositeSubscription;
@@ -26,6 +28,7 @@ import rx.subscriptions.CompositeSubscription;
 public class DetailActivity extends ViewModelActivity<DetailViewModel, ActivityDetailBinding> implements CheckoutDialog.Listener {
 
     private static final String EXTRA_BOOK = "EXTRA_BOOK";
+    private static final int REQUEST_CODE_BOOK = 1;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -70,7 +73,7 @@ public class DetailActivity extends ViewModelActivity<DetailViewModel, ActivityD
                 .subscribe(book1 -> makeSnackbar(R.string.detail_checkout_success)));
 
         subscriptions.add(viewModel.deletions()
-                .subscribe(this::deleteBook));
+                .subscribe(this::onBookDeleted));
 
         subscriptions.add(viewModel.deleteErrors()
                 .subscribe(throwable -> makeSnackbar(R.string.detail_error_delete)));
@@ -85,7 +88,7 @@ public class DetailActivity extends ViewModelActivity<DetailViewModel, ActivityD
         CheckoutDialog.show(this);
     }
 
-    private void deleteBook(Void ignored) {
+    private void onBookDeleted(Void ignored) {
         finish();
     }
 
@@ -124,11 +127,31 @@ public class DetailActivity extends ViewModelActivity<DetailViewModel, ActivityD
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if(id == R.id.menu_item_delete_book){
+        if (id == R.id.menu_item_delete_book) {
             viewModel.deleteBook();
+            return true;
+        } else if (id == R.id.menu_item_edit_book) {
+            openEditActivity();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openEditActivity() {
+        startActivityForResult(AddActivity.newIntent(this, book), REQUEST_CODE_BOOK);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_BOOK) {
+            if (resultCode == Activity.RESULT_OK) {
+                final Book result = Parcels.unwrap(data.getParcelableExtra(AddActivity.EXTRA_BOOK));
+                this.book = result;
+                viewModel.updateBook(result);
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 package io.github.github.plastix.prolificlibrary.ui.add;
 
+import android.content.res.Resources;
 import android.view.View;
 
 import junit.framework.Assert;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import io.github.github.plastix.prolificlibrary.util.RxSchedulersOverrideRule;
+import io.github.plastix.prolificlibrary.R;
 import io.github.plastix.prolificlibrary.data.model.Book;
 import io.github.plastix.prolificlibrary.data.remote.LibraryService;
 import io.github.plastix.prolificlibrary.ui.add.AddViewModel;
@@ -26,7 +28,9 @@ import rx.Single;
 import rx.observers.TestSubscriber;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
@@ -41,6 +45,9 @@ public class AddViewModelTests {
         @Mock
         LibraryService libraryService;
 
+        @Mock
+        Resources resources;
+
         AddViewModel addViewModel;
 
 
@@ -48,7 +55,7 @@ public class AddViewModelTests {
         public void setUp() {
             MockitoAnnotations.initMocks(this);
 
-            addViewModel = new AddViewModel(libraryService);
+            addViewModel = new AddViewModel(libraryService, resources, null);
             addViewModel.bind();
         }
 
@@ -86,16 +93,17 @@ public class AddViewModelTests {
             addViewModel.getBookPublisher().set("Some Publisher");
             addViewModel.getBookCategories().set("Category");
 
+            Book book = mock(Book.class);
             when(libraryService.submitBook(anyString(), anyString(), anyString(), anyString()))
-                    .thenReturn(Single.just(mock(Book.class)));
+                    .thenReturn(Single.just(book));
 
-            TestSubscriber testSubscriber = TestSubscriber.create();
+            TestSubscriber<Book> testSubscriber = TestSubscriber.create();
             addViewModel.onSubmitSuccess().subscribe(testSubscriber);
 
             addViewModel.submit();
 
             Assert.assertEquals(addViewModel.getProgressVisibility().get(), View.GONE);
-            testSubscriber.assertCompleted();
+            testSubscriber.assertValue(book);
 
         }
 
@@ -121,6 +129,60 @@ public class AddViewModelTests {
             testSubscriber.assertNoTerminalEvent();
         }
 
+        @Test
+        public void getTitle_addTitleByDefault() {
+            when(resources.getString(R.string.add_screen_title)).thenReturn("Add Book");
+
+            Assert.assertEquals("Add Book", addViewModel.getScreenTitle());
+        }
+
+        @Test
+        public void getTitle_editTitleWhenHasBook() {
+            addViewModel = new AddViewModel(libraryService, resources, mock(Book.class));
+            when(resources.getString(R.string.add_screen_title_edit)).thenReturn("Edit Book");
+
+            Assert.assertEquals("Edit Book", addViewModel.getScreenTitle());
+        }
+
+        @Test
+        public void submit_updatesBookWhenHasBook() {
+            Book book = new Book();
+            book.id = 0;
+            book.title = "Title";
+            book.author = "Author";
+            book.publisher = "Publisher";
+            book.categories = "Category";
+            addViewModel = new AddViewModel(libraryService, resources, book);
+            addViewModel.bind();
+
+            when(libraryService.updateBook(anyString(), anyString(), anyString(), anyString(), anyString(), isNull()))
+                    .thenReturn(Single.just(book));
+
+            addViewModel.submit();
+
+            verify(libraryService).updateBook(String.valueOf(book.id), book.author, book.categories,
+                    book.title, book.publisher, null);
+
+        }
+
+        @Test
+        public void submit_addsBookWhenNoBook() {
+            addViewModel = new AddViewModel(libraryService, resources, null);
+            addViewModel.bind();
+
+            addViewModel.getBookTitle().set("Title");
+            addViewModel.getBookAuthor().set("Author");
+            addViewModel.getBookPublisher().set("Publisher");
+            addViewModel.getBookCategories().set("Category");
+
+            when(libraryService.submitBook(anyString(), anyString(), anyString(), anyString()))
+                    .thenReturn(Single.just(mock(Book.class)));
+
+            addViewModel.submit();
+
+            verify(libraryService).submitBook("Author", "Category", "Title", "Publisher");
+        }
+
     }
 
     @RunWith(org.junit.runners.Parameterized.class)
@@ -141,6 +203,9 @@ public class AddViewModelTests {
 
         @Mock
         LibraryService libraryService;
+
+        @Mock
+        Resources resources;
 
         AddViewModel addViewModel;
 
@@ -171,7 +236,7 @@ public class AddViewModelTests {
         public void setUp() {
             MockitoAnnotations.initMocks(this);
 
-            addViewModel = new AddViewModel(libraryService);
+            addViewModel = new AddViewModel(libraryService, resources, null);
             addViewModel.bind();
         }
 

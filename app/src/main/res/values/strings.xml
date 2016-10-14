@@ -25,9 +25,11 @@
     <string name="detail_checkout_success">Successfully checked out book!</string>
     <string name="detail_error_delete">Error deleting book!</string>
     <string name="detail_menu_share">Share</string>
-    <string name="detail_menu_delete">Delete Book</string>
+    <string name="detail_menu_delete">Delete</string>
+    <string name="detail_menu_edit">Edit</string>
 
     <string name="add_screen_title">Add Book</string>
+    <string name="add_screen_title_edit">Edit Book</string>
     <string name="add_book_title">Book Title</string>
     <string name="add_book_author">Author</string>
     <string name="add_book_publisher">Publisher</string>

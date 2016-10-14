@@ -24,6 +24,7 @@ import rx.observers.TestSubscriber;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -174,7 +175,8 @@ public class DetailViewModelTest {
     public void checkout_emitsSuccessfulCheckout() {
         TestSubscriber<Book> testSubscriber = new TestSubscriber<>();
         String name = "Some Name";
-        when(libraryService.checkoutBook(anyInt(), anyString())).thenReturn(Single.just(book));
+        when(libraryService.updateBook(anyString(), isNull(), isNull(), isNull(),
+                isNull(), anyString())).thenReturn(Single.just(book));
         viewModel.successfulCheckOuts().subscribe(testSubscriber);
 
         viewModel.checkout(name);
@@ -190,7 +192,8 @@ public class DetailViewModelTest {
     @Test
     public void checkout_emitsNothing() {
         String name = "Some Name";
-        when(libraryService.checkoutBook(anyInt(), anyString())).thenReturn(
+        when(libraryService.updateBook(anyString(), isNull(), isNull(), isNull(),
+                isNull(), anyString())).thenReturn(
                 Observable.<Book>never().toSingle()
         );
         viewModel.checkout(name);
@@ -205,7 +208,8 @@ public class DetailViewModelTest {
         TestSubscriber<Throwable> testSubscriber = new TestSubscriber<>();
         String name = "Some Name";
         Throwable error = new Throwable();
-        when(libraryService.checkoutBook(anyInt(), anyString())).thenReturn(
+        when(libraryService.updateBook(anyString(), isNull(), isNull(), isNull(),
+                isNull(), anyString())).thenReturn(
                 Single.error(error)
         );
 

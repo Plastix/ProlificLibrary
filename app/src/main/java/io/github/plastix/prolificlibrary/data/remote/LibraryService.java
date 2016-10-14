@@ -32,8 +32,12 @@ public interface LibraryService {
 
     @FormUrlEncoded
     @PUT("books/{id}/")
-    Single<Book> checkoutBook(@Path("id") int id,
-                              @Field("lastCheckedOutBy") String name
+    Single<Book> updateBook(@Path("id") String id,
+                            @Field("author") String author,
+                            @Field("categories") String categories,
+                            @Field("title") String title,
+                            @Field("publisher") String publisher,
+                            @Field("lastCheckedOutBy") String name
     );
 
     // Using a Single<Void> instead of a Completable because RxJava 1.2.0 broke the

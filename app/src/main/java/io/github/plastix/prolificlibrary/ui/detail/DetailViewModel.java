@@ -95,7 +95,7 @@ public class DetailViewModel extends RxViewModel {
     }
 
     public void checkout(String name) {
-        unsubscribeOnDestroy(libraryService.checkoutBook(book.id, name)
+        unsubscribeOnDestroy(libraryService.updateBook(String.valueOf(book.id), null, null, null, null, name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> {
@@ -107,11 +107,15 @@ public class DetailViewModel extends RxViewModel {
                     loadingVisibility.set(View.GONE);
                 })
                 .subscribe(book1 -> {
-                    this.book = book1;
-                    notifyChange();
+                    updateBook(book1);
                     checkOuts.call(book1);
                 }, checkoutErrors)
         );
+    }
+
+    public void updateBook(Book book) {
+        this.book = book;
+        notifyChange();
     }
 
     public void deleteBook() {
