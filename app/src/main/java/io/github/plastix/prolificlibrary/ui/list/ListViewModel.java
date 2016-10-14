@@ -15,7 +15,6 @@ import io.github.plastix.prolificlibrary.data.model.Book;
 import io.github.plastix.prolificlibrary.data.remote.LibraryService;
 import io.github.plastix.prolificlibrary.ui.base.RxViewModel;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -24,7 +23,8 @@ public class ListViewModel extends RxViewModel {
     private final ObservableInt emptyViewVisibility = new ObservableInt();
     private BehaviorRelay<List<Book>> booksRelay = BehaviorRelay.create();
     private PublishRelay<Void> fabClicks = PublishRelay.create();
-    private PublishRelay<Throwable> networkErrors = PublishRelay.create();
+    private PublishRelay<Throwable> fetchErrors = PublishRelay.create();
+    private PublishRelay<Throwable> deleteErrors = PublishRelay.create();
 
     private LibraryService libraryService;
 
@@ -45,12 +45,21 @@ public class ListViewModel extends RxViewModel {
     }
 
     public void fetchBooks() {
-        Subscription sub = libraryService.fetchAllBooks()
+        unsubscribeOnDestroy(libraryService.fetchAllBooks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::updateBooks, throwable -> networkErrors.call(throwable));
+                .subscribe(this::updateBooks,
+                        throwable -> fetchErrors.call(throwable)));
 
-        unsubscribeOnDestroy(sub);
+    }
+
+    public void deleteBooks() {
+        unsubscribeOnDestroy(libraryService.clearAllBooks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(Void -> this.updateBooks(new ArrayList<>()),
+                        throwable -> deleteErrors.call(throwable)));
+
     }
 
     public void onFabClick() {
@@ -65,8 +74,12 @@ public class ListViewModel extends RxViewModel {
         return booksRelay.asObservable();
     }
 
-    public Observable<Throwable> networkErrors(){
-        return networkErrors;
+    public Observable<Throwable> fetchErrors() {
+        return fetchErrors;
+    }
+
+    public Observable<Throwable> deleteErrors() {
+        return deleteErrors;
     }
 
     public ObservableInt getEmptyVisibility() {

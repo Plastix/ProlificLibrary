@@ -78,12 +78,40 @@ public class ListViewModelTest {
         when(libraryService.fetchAllBooks()).thenReturn(
                 Single.error(error));
 
-        listViewModel.networkErrors().subscribe(testSubscriber);
+        listViewModel.fetchErrors().subscribe(testSubscriber);
         listViewModel.fetchBooks();
 
         testSubscriber.assertValueCount(1);
         testSubscriber.assertValue(error);
     }
+
+    @Test
+    public void deleteBooks_shouldUpdateBooks() {
+        TestSubscriber<List<Book>> testSubscriber = new TestSubscriber<>();
+        when(libraryService.clearAllBooks()).thenReturn(
+                Single.just(null));
+
+        listViewModel.getBooks().subscribe(testSubscriber);
+        listViewModel.deleteBooks();
+
+        //noinspection unchecked
+        testSubscriber.assertValues(new ArrayList<>(), new ArrayList<>());
+    }
+
+    @Test
+    public void deleteBooks_shouldError() {
+        TestSubscriber<Throwable> testSubscriber = new TestSubscriber<>();
+        Throwable error = new Throwable();
+        when(libraryService.clearAllBooks()).thenReturn(
+                Single.error(error));
+
+        listViewModel.deleteErrors().subscribe(testSubscriber);
+        listViewModel.deleteBooks();
+
+        testSubscriber.assertValue(error);
+    }
+
+
 
     @Test
     public void emptyState_shouldBeVisibleByDefault() {

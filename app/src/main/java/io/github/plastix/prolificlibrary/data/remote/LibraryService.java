@@ -10,7 +10,6 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
-import rx.Completable;
 import rx.Single;
 
 public interface LibraryService {
@@ -37,6 +36,9 @@ public interface LibraryService {
                               @Field("lastCheckedOutBy") String name
     );
 
-    @DELETE("clean")
-    Completable clearAllBooks();
+    // Using a Single<Void> instead of a Completable because RxJava 1.2.0 broke the
+    // Retrofit Rx call adapter and the fix isn't released yet
+    // See https://github.com/square/retrofit/issues/2034
+    @DELETE("clean/")
+    Single<Void> clearAllBooks();
 }
