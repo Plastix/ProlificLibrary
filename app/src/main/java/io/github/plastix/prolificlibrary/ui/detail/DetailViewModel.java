@@ -106,7 +106,11 @@ public class DetailViewModel extends RxViewModel {
                     checkoutEnabled.set(true);
                     loadingVisibility.set(View.GONE);
                 })
-                .subscribe(checkOuts, checkoutErrors)
+                .subscribe(book1 -> {
+                    this.book = book1;
+                    notifyChange();
+                    checkOuts.call(book1);
+                }, checkoutErrors)
         );
     }
 
