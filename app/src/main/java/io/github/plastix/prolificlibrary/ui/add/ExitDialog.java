@@ -1,15 +1,15 @@
 package io.github.plastix.prolificlibrary.ui.add;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import io.github.plastix.prolificlibrary.R;
 
-// Todo Use Support DialogFragment
 public class ExitDialog extends DialogFragment {
 
     private static final String ID = "ExitDialog";
@@ -19,10 +19,11 @@ public class ExitDialog extends DialogFragment {
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
         // Only show a new Dialog if we don't already have one in the manager
         if (fragmentManager.findFragmentByTag(ID) == null) {
-            dialog.show(activity.getFragmentManager(), ID);
+            dialog.show(activity.getSupportFragmentManager(), ID);
         }
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getActivity())
