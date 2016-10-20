@@ -97,10 +97,13 @@ Near the end of the project, I needed to support editing a book. Since editing a
 
 IMO this screen is not as clean as a I wanted it to me. I'm not sure if there is a better solution.
 
-Future Changes
+Future Improvments
 --------
 * Make data models immutable using [AutoValue](https://github.com/google/auto/tree/master/value)
 * Switch from Parcler to [Auto-value-parcel](https://github.com/rharter/auto-value-parcel)
+* Create seperate ViewModels for adding & editing a book instead of one ViewModel which contains both logic
+* Integration tests to ensure proper serialization of JSON (validating models) 
+* Functional UI tests using Espresso
 
 
 
